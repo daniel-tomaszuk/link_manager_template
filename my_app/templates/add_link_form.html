@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+
+<form action="{% url 'add-link' %}" method="post">
+        {%	csrf_token	%}
+        {{	form.as_p	}}
+        <input class="btn btn-primary btn-xs" type="submit" value="Save">
+        <button class="btn btn-primary btn-xs"
+                onclick="location.href='{% url 'main-page'%}'" type="button">
+            Cancel
+        </button>
+</form>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>{{ message }} {{ link.valid }}</h1>
+    <div>
+        <table border="solid">
+            <tr>
+                <th>Link URL</th>
+                <th>Link password</th>
+                <th>Action</th>
+                <th>Times Shown</th>
+            </tr>
+            <tr>
+                <td>{{ link.path }}</td>
+                <td>{{ link.link_password }}</td>
+                <td>
+                    <button onclick="location.href='{{ link.path }}'"
+                            type="button">
+                        Redirect
+                    </button>
+                </td>
+                <td>{{ link.link_displays }}</td>
+            </tr>
+
+        </table>
+    </div>
+{% endblock %}

@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <!--<title>{{ title }}</title>-->
+        {% if logged %}
+            {{ user }}
+            <input type="button" class=".login"
+                   onclick="location.href='{% url 'logout' %}';"
+                   value="Logout"/>
+        {% else %}
+            <input type="button" class=".login"
+                   onclick="location.href='{% url 'login' %}';"
+                   value="Login"/>
+        {% endif %}
+
+    </head>
+    <body>
+        {% block content %}
+        <p>content</p>
+        {% endblock %}
+    </body>
+</html>
+
+

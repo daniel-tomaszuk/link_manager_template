@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+
+<form action="" method="post">
+		{%	csrf_token	%}
+        {{ message }}
+		{{ form.as_p }}
+    <input type="submit" value="Submit"/>
+    <a class="link" href="{% url 'main-page'%}">
+        <button type="button">Main Page</button>
+    </a>
+</form>
+{% endblock %}
