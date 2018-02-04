@@ -100,6 +100,7 @@ class ShowLink(LoginRequiredMixin, View):
 
     def get(self, request, slug):
         logged_user = request.user
+        # should be uniqe
         link = Link.objects.get(link_hash=slug)
         # # for link in user_links:
         message = 'Link Info Page '
@@ -108,7 +109,8 @@ class ShowLink(LoginRequiredMixin, View):
 
         if last_valid_date < link.creation_date:
             # link still valid, will be displayed
-            Link.objects.update()
+            # cound be done as:
+            # Link.objects.get(link_hash=slug).update(link_displays=number)
             link.link_displays += 1
             link.save()
             context = {
