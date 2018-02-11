@@ -1,12 +1,12 @@
-{% extends "base.html" %}
+{% extends "my_app/base.html" %}
 {% block content %}
 
-<form action="{% url 'add-link' %}" method="post">
+<form action="{% url 'my_app:add-link' %}" method="post">
         {%	csrf_token	%}
         {{	form.as_p	}}
         <input class="btn btn-primary btn-xs" type="submit" value="Save">
         <button class="btn btn-primary btn-xs"
-                onclick="location.href='{% url 'main-page'%}'" type="button">
+                onclick="location.href='{% url 'my_app:main-page'%}'" type="button">
             Cancel
         </button>
 </form>

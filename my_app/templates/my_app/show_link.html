@@ -1,8 +1,10 @@
-{% extends "base.html" %}
+{% extends "my_app/base.html" %}
 {% block content %}
 
 <h1>{{ message }} {{ link.valid }}</h1>
     <div>
+        <button onclick="location.href='{% url 'my_app:main-page' %}'"
+                type="button">Main Page</button>
         <table border="solid">
             <tr>
                 <th>Link URL</th>

@@ -2,8 +2,11 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import (authenticate, login, logout)
 from django.views.generic.edit import (FormView, CreateView)
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
+from django.views import generic
+from django.db.models import F
 from .forms import *
 from .models import *
 import datetime
@@ -13,8 +16,7 @@ import hashlib
 
 
 class Login(FormView):
-
-    template_name = 'login.html'
+    template_name = 'my_app/login.html'
     # form_class in FormView !
     form_class = Login
 
@@ -26,7 +28,7 @@ class Login(FormView):
             success_url = next_url
             return success_url  # you can include some query strings as well
         else:
-            success_url = reverse_lazy('login')
+            success_url = reverse_lazy('my_app:login')
             return success_url  # what url you wish to return'
 
     def form_valid(self, form):
@@ -38,47 +40,40 @@ class Login(FormView):
         return super(Login, self).form_valid(form)
 
 
-class Logout(FormView):
+class Logout(View):
     def get(self, request):
         logout(request)
-        return redirect(reverse_lazy('login'))
+        return redirect(reverse_lazy('my_app:login'))
 
     def post(self):
         pass
 
 
-class MainPage(LoginRequiredMixin, View):
-    login_url = reverse_lazy('login')
+class MainPage(LoginRequiredMixin, generic.ListView):
+    login_url = reverse_lazy('my_app:login')
     redirect_field_name = 'next'
+    # context_object_name = 'link_list' is set by default
+    template_name = "my_app/main_page.html"
 
-    def get(self, request):
-        logged_user = request.user
-        user_link_list = Link.objects.filter(valid=True)\
-                                     .filter(my_user=logged_user)
-        context = {
-            'message': 'Main Page',
-            'link_list': user_link_list,
-        }
-        return render(request, 'main_page.html', context)
-
-    def post(self, request):
-        pass
+    def get_queryset(self):
+        return Link.objects.filter(valid=True)\
+                           .filter(my_user=self.request.user)
 
 
 class AddLink(LoginRequiredMixin, CreateView):
     model = Link
-    template_name = "add_link_form.html"
+    template_name = "my_app/add_link_form.html"
     fields = ["path", "link_password"]
 
-    login_url = reverse_lazy('login')
+    login_url = reverse_lazy('my_app:login')
     redirect_field_name = 'next'
-    success_url = reverse_lazy("main-page")
+    success_url = reverse_lazy("my_app:main-page")
 
     def form_valid(self, form):
         form.instance.my_user = self.request.user
         # get unique slug field
         # generate the slug
-        max_length = Link._meta.get_field('link_hash').max_length
+        max_length = Link._meta.get_field('slug').max_length
         # generate unique slug
         i = 0
         while True:
@@ -86,51 +81,31 @@ class AddLink(LoginRequiredMixin, CreateView):
                               + str(i))[:max_length]
             my_slug = hashlib.sha224(my_slug.encode()).hexdigest()
             # look for unique slug
-            if not Link.objects.filter(link_hash=my_slug).exists():
+            if not Link.objects.filter(slug=my_slug).exists():
                 break
             i += 1
-
-        form.instance.link_hash = my_slug
+        form.instance.slug = my_slug
         return super().form_valid(form)
 
 
-class ShowLink(LoginRequiredMixin, View):
-    login_url = reverse_lazy('login')
+class ShowLink(LoginRequiredMixin, generic.DetailView):
+    login_url = reverse_lazy('my_app:login')
     redirect_field_name = 'next'
+    model = Link  # so context name is given as "link"
+    template_name = 'my_app/show_link.html'
 
-    def get(self, request, slug):
-        logged_user = request.user
-        # should be uniqe
-        link = Link.objects.get(link_hash=slug)
-        # # for link in user_links:
-        message = 'Link Info Page '
-        # check if link is still valid
-        last_valid_date = timezone.now() - datetime.timedelta(seconds=60)
-
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        last_valid_date = timezone.now() - datetime.timedelta(days=1)
+        # get link object from context
+        link = get_object_or_404(Link, pk=context['object'].id)
         if last_valid_date < link.creation_date:
             # link still valid, will be displayed
-            # cound be done as:
-            # Link.objects.get(link_hash=slug).update(link_displays=number)
-            link.link_displays += 1
+            link.link_displays = F('link_displays') + 1
             link.save()
-            context = {
-                'message': message,
-                'link': link,
-                # 'time': time_seconds,
-            }
-            return render(request, 'show_link.html', context)
         else:
-            link.valid = False
+            # set valid as False
+            link.valid = F('valid') * False
             link.save()
-            message = 'Link not valid. 24h time window has passed.'
-            context = {
-                'message': message,
-                # 'time': time_seconds,
-            }
-            return render(request, 'main_page.html', context)
-
-    def post(self, request):
-        pass
-
-
-
+            context['message'] = 'Link not valid. 24h time window has passed.'
+        return context

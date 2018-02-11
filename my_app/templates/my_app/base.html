@@ -6,11 +6,11 @@
         {% if logged %}
             {{ user }}
             <input type="button" class=".login"
-                   onclick="location.href='{% url 'logout' %}';"
+                   onclick="location.href='{% url 'my_app:logout' %}';"
                    value="Logout"/>
         {% else %}
             <input type="button" class=".login"
-                   onclick="location.href='{% url 'login' %}';"
+                   onclick="location.href='{% url 'my_app:login' %}';"
                    value="Login"/>
         {% endif %}
 
@@ -21,5 +21,4 @@
         {% endblock %}
     </body>
 </html>
-
 

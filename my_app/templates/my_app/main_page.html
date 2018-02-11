@@ -1,9 +1,10 @@
-{% extends "base.html" %}
+{% extends "my_app/base.html" %}
 {% block content %}
     <h1>{{ message }}</h1>
     <div>
-        <button class="btn btn-primary btn-xs" onclick="location.href='{% url 'add-link'%}'" type="button">
-            Add
+        <button class="btn btn-primary btn-xs"
+                onclick="location.href='{% url 'my_app:add-link'%}'"
+                type="button">Add
         </button>
     </div>
     <div>
@@ -18,7 +19,7 @@
                 <tr>
                     <td>{{ link.path }}</td>
                     <td>{{ link.link_password }}</td>
-                    <td><a href="{% url 'show-link' slug=link.link_hash %}">Link Details</a></td>
+                    <td><a href="{% url 'my_app:show-link' slug=link.slug %}">Link Details</a></td>
                     <td>{{ link.creation_date|date:"d.m.Y" }} {{ link.creation_date|time:"H:i" }}</td>
                 </tr>
             {% endfor %}

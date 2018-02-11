@@ -9,7 +9,7 @@ class Link(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     my_user = models.ForeignKey(User, on_delete=models.CASCADE)
     valid = models.BooleanField(default=True)
-    link_hash = models.SlugField(max_length=128, unique=True)
+    slug = models.SlugField(max_length=128, unique=True)
     link_displays = models.IntegerField(default=0)
 
     @property
@@ -19,5 +19,5 @@ class Link(models.Model):
                                         self.my_user.username)
 
     def __str__(self):
-        return "ID:" + str(self.id) + " " + self.link_info
+        return "Link ID:" + str(self.id) + " " + self.link_info
 
