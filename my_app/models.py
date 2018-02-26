@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import timedelta, datetime
+from datetime import timedelta
+import datetime
 
 
 class Link(models.Model):
@@ -20,14 +21,24 @@ class Link(models.Model):
                                             .strftime("%Y-%m-%d, %H:%M:%S"),
                                         self.my_user.username)
 
+    def field_to_datetime(self):
+        y = self.creation_date.year
+        m = self.creation_date.month
+        d = self.creation_date.day
+        h = self.creation_date.hour
+        s = self.creation_date.second
+        return datetime.datetime(y, m, d, h, s)
+
     @property
     def valid_for(self):
-        return 'Link will be valid until {} which is exactly 24H.'\
-            .format(self.creation_date + timedelta(days=1))
+        return 'Link will be valid until {}.'\
+            .format(self.field_to_datetime() + timedelta(days=1))
 
     @property
     def is_valid(self):
-        if (self.creation_date - datetime.datetime.now()).seconds < 10:
+
+        if (self.field_to_datetime()
+                - datetime.datetime.now()).seconds < 24*3600:
             return True
         else:
             self.valid = False

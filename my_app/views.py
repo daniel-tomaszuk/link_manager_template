@@ -128,14 +128,6 @@ class ShowLink(LoginRequiredMixin, generic.DetailView):
         context = super().get_context_data(**kwargs)
         # get link object from context
         link = get_object_or_404(Link, pk=context['object'].id)
-        # if link.is_valid:
-        #     # link still valid, will be displayed
-        #     link.link_displays = F('link_displays') + 1
-        #     link.save()
-        # else:
-        #     # set valid as False
-        #     link.valid = F('valid') * False
-        #     link.save()
         if not link.is_valid:
             context['message'] = 'Link not valid. 24h time window has passed.'
         return context
@@ -169,6 +161,8 @@ class GiveLink(LoginRequiredMixin, View):
     def get(self, request, slug):
         link = Link.objects.get(slug=slug)
         if link.is_valid:
+            link.link_displays = F('link_displays') + 1
+            link.save()
             if link.path:
                 return redirect(link.path)
             elif link.file:
