@@ -14,6 +14,11 @@ urlpatterns = [
     path('<slug:slug>', views.GetLink.as_view(), name='get-link'),
     path('give-content/<slug:slug>', views.GiveLink.as_view(),
          name='give-content'),
+    path('api/info-list', views.InfoList.as_view(), name='get-info'),
+    # path('api/add', views.AddContent.as_view(), name='add-content'),
+
+
+
 ]
 # # serve static file
 # urlpatterns += [

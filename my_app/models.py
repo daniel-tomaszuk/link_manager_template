@@ -36,7 +36,6 @@ class Link(models.Model):
 
     @property
     def is_valid(self):
-
         if (self.field_to_datetime()
                 - datetime.datetime.now()).seconds < 24*3600:
             return True

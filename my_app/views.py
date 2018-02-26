@@ -10,6 +10,15 @@ from django.views.static import serve
 from django.http import Http404
 from django.db.models import F
 
+# REST API
+from .serializers import InfoSerializer, ContentSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import mixins
+from rest_framework import generics
+from rest_framework import status
+##
+
 from .forms import *
 from .models import *
 import datetime
@@ -173,3 +182,13 @@ class GiveLink(LoginRequiredMixin, View):
 
     def post(self, request):
         pass
+
+
+class InfoList(generics.ListAPIView):
+    queryset = Link.objects.all()
+    serializer_class = InfoSerializer
+
+
+class AddContent(generics.CreateAPIView):
+    queryset = Link.objects.all()
+    serializer_class = ContentSerializer
