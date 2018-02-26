@@ -1,12 +1,13 @@
 {% extends "my_app/base.html" %}
 {% block content %}
-
+<h2>Write password for the secured content:</h2>
 <form action="" method="post">
 		{%	csrf_token	%}
+        {{ message }}
 		{{ form.as_p }}
     <input type="submit" value="Submit"/>
     <button class="btn btn-primary btn-xs"
             onclick="location.href='{% url 'my_app:main-page' %}'"
-            type="button">Main Page</button>
+            type="button">Cancel</button>
 </form>
 {% endblock %}

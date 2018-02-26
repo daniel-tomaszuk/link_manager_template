@@ -1,7 +1,11 @@
 {% extends "my_app/base.html" %}
 {% block content %}
 
-<h1>{{ message }} {{ link.valid }}</h1>
+    <h1>{{ message }}</h1>
+    <h2>{{ link.valid_for }}</h2>
+    <h3>Link unique address within this service: {{ link.slug }}</h3>
+    <h3>Link password: {{ link.link_password }}</h3>
+
     <div>
         <button onclick="location.href='{% url 'my_app:main-page' %}'"
                 type="button">Main Page</button>
@@ -9,21 +13,13 @@
             <tr>
                 <th>Link URL</th>
                 <th>Link password</th>
-                <th>Action</th>
                 <th>Times Shown</th>
             </tr>
             <tr>
                 <td>{{ link.path }}</td>
                 <td>{{ link.link_password }}</td>
-                <td>
-                    <button onclick="location.href='{{ link.path }}'"
-                            type="button">
-                        Redirect
-                    </button>
-                </td>
                 <td>{{ link.link_displays }}</td>
             </tr>
-
         </table>
     </div>
 {% endblock %}

@@ -4,25 +4,15 @@
     <div>
         <button class="btn btn-primary btn-xs"
                 onclick="location.href='{% url 'my_app:add-link'%}'"
-                type="button">Add
-        </button>
+                type="button">Add</button>
+        <button class="btn btn-primary btn-xs"
+                onclick="location.href='admin'"
+                type="button">Admin</button>
     </div>
-    <div>
-        <table border="solid">
-            <tr>
-                <th>Link</th>
-                <th>Link password</th>
-                <th>Link hash</th>
-                <th>Date of creation</th>
-            </tr>
-            {% for link in link_list %}
-                <tr>
-                    <td>{{ link.path }}</td>
-                    <td>{{ link.link_password }}</td>
-                    <td><a href="{% url 'my_app:show-link' slug=link.slug %}">Link Details</a></td>
-                    <td>{{ link.creation_date|date:"d.m.Y" }} {{ link.creation_date|time:"H:i" }}</td>
-                </tr>
-            {% endfor %}
-        </table>
-    </div>
+    <h2>To access the secured content, write the security link.</h2>
+    <form action="" method="post">
+            {%	csrf_token	%}
+            {{ form.as_p }}
+        <input type="submit" value="Submit"/>
+    </form>
 {% endblock %}

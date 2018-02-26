@@ -1,13 +1,12 @@
 {% extends "my_app/base.html" %}
 {% block content %}
-
-<form action="{% url 'my_app:add-link' %}" method="post">
+<h2>Enter link path OR file to secure.</h2>
+<form enctype="multipart/form-data" action="{% url 'my_app:add-link' %}" method="post">
         {%	csrf_token	%}
         {{	form.as_p	}}
         <input class="btn btn-primary btn-xs" type="submit" value="Save">
         <button class="btn btn-primary btn-xs"
-                onclick="location.href='{% url 'my_app:main-page'%}'" type="button">
-            Cancel
-        </button>
+                onclick="location.href='{% url 'my_app:main-page'%}'"
+                type="button">Cancel</button>
 </form>
 {% endblock %}
