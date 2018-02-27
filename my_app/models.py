@@ -36,11 +36,13 @@ class Link(models.Model):
 
     @property
     def is_valid(self):
-        if (self.field_to_datetime()
-                - datetime.datetime.now()).seconds < 24*3600:
+        if (datetime.datetime.now() - self.field_to_datetime()).seconds < \
+                                                                  24 * 3600:
             return True
         else:
+            # set link as not valid
             self.valid = False
+            self.save()
             return False
 
     def __str__(self):
